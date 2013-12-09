@@ -1,0 +1,17 @@
+<h1 class="titMaster">PS4 Alert!</h1>
+{{#items}}
+<div class="item">
+    <strong class="item_lbl">Product name: </strong> <span class="item_status">{{ name }}</span>
+    <br/>
+    <strong class="item_lbl">Regular price: </strong> <span class="item_status">{{ regularPrice }}</span>
+    <br/>
+    <strong class="item_lbl">URL: </strong> <a href="{{ url }}" target="_blank" title="{{ name }}" class="item_status">{{ name }}</a>
+    <br/>
+    <strong class="item_lbl">Available in store? </strong>
+    <span class="item_status">
+        {{#is inStoreAvailability}} {{else}} {{/is}}
+    </span>
+</div>
+<br/>
+<br/>
+{{/items}}
