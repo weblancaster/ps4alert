@@ -1,13 +1,60 @@
 <!doctype html>
 <html>
 <head>
+
     <meta charset="utf-8" />
     <title>PlayStation 4 Alert!</title>
-    <link rel="stylesheet" href=""/>
+
+    <!-- styles -->
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:400,300,700' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="/stylesheets/normalize.css"/>
+    <link rel="stylesheet" href="/stylesheets/style.css"/>
+
+    <!-- javascripts -->
+    <script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/0.9.16/socket.io.min.js"></script>
+    <script>
+        var socket = io.connect('http://localhost');
+
+        (function(window) {
+            var App = App || {};
+
+            App.Stream = {
+
+                /**
+                 * Initialize application components on start
+                 * @method init
+                 */
+                init: function() {
+                    this.onRefreshBrowser();
+                },
+
+                /**
+                 * Receive signal from the server to restart the browser when there's
+                 * @method onRefreshBrowser
+                 */
+                onRefreshBrowser: function() {
+                    socket.on('refreshBrowser', function(response) {
+
+                        if ( response.data ) {
+                            window.location.reload();
+                        }
+                    });
+                }
+            }
+
+            App.Stream.init();
+
+        })(window);
+    </script>
+
 </head>
 <body>
 
-    {{{body}}}
+    <div class="cover">&nbsp;</div>
+
+    <div class="content">
+        {{{body}}}
+    </div>
 
 </body>
 </html>

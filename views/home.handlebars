@@ -1,17 +1,48 @@
-<h1 class="titMaster">PS4 Alert!</h1>
+<section class="item">
+    <h1 class="titMaster">How it works?</h1>
+    <p class="item_desc">
+        <strong>PS4 Alerts!</strong> uses <a href="https://bbyopen.com/" target="_blank" title="bestbuy">Best Buy Open API</a> to search for PlayStation 4 consoles at Best Buy Database every one (1) minute
+        and check whether is available "in store" or "online" and if so sends you (me) an notification with link of the PS4 available to the emails subscribed the application also shows here
+        the results found.
+        <br/><br/>
+        Built with Node.js/Express.js-Handlebars and Socket.io.
+    </p>
+
+    <h2 class="titMaster">What was found at this time?</h2>
 {{#items}}
-<div class="item">
-    <strong class="item_lbl">Product name: </strong> <span class="item_status">{{ name }}</span>
-    <br/>
-    <strong class="item_lbl">Regular price: </strong> <span class="item_status">{{ regularPrice }}</span>
-    <br/>
-    <strong class="item_lbl">URL: </strong> <a href="{{ url }}" target="_blank" title="{{ name }}" class="item_status">{{ name }}</a>
-    <br/>
-    <strong class="item_lbl">Available in store? </strong>
-    <span class="item_status">
-        {{#is inStoreAvailability}} {{else}} {{/is}}
-    </span>
-</div>
-<br/>
-<br/>
+    <p class="item_inner">
+        <strong class="item_lbl">Product name: </strong> <span class="item_status">{{ name }}</span>
+    </p>
+    <p class="item_inner">
+        <strong class="item_lbl">Regular price: </strong> <span class="item_status">${{ regularPrice }}</span>
+    </p>
+    <p class="item_inner">
+        <strong class="item_lbl">URL: </strong> <a href="{{ url }}" target="_blank" title="{{ name }}" class="item_status item-anchor">{{ name }}</a>
+    </p>
+    <p class="item_inner">
+        <strong class="item_lbl">Available in store? </strong>
+        <span class="item_status">
+            {{#is inStoreAvailability}} {{else}} {{/is}}
+        </span>
+    </p>
+    <p class="item_inner">
+        <strong class="item_lbl">Available online? </strong>
+        <span class="item_status">
+            {{#is onlineAvailability}} {{else}} {{/is}}
+        </span>
+    </p>
 {{/items}}
+</section>
+
+<!-- subscribe -->
+<form class="subscribe" action="">
+    <fieldset class="subscribe_inner">
+        <label for="email" class="subscribe_lbl">
+            <span class="subscribe_tit">Do you want to be notified when available?</span>
+            <input type="email" name="email" id="email" class="subscribe_field" placeholder="Enter your email here..." />
+        </label>
+        <input type="submit" value="Subscribe" class="subscribe_submit" />
+        <p class="subscribe_disclaimer">* Your email wont be used for other purpose besides send you an notification when it's available.</p>
+    </fieldset>
+</form>
+<!-- subscribe / end -->

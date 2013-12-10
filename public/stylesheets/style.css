@@ -1,0 +1,139 @@
+/*****************************************
+* Components organization
+*
+* @Defaults
+* @Cover
+* @Content
+* @Item
+* @Subscribe
+*****************************************/
+
+* {
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+html {
+    font: 62.5% 'Open Sans', sans-serif;
+}
+
+body {
+    position: relative;
+}
+
+/*****************************************
+* @Cover
+*****************************************/
+.cover {
+    z-index: 10;
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: url(/images/battlefield.jpg) no-repeat center center fixed;
+    -webkit-background-size: cover;
+    -moz-background-size: cover;
+    -o-background-size: cover;
+    background-size: cover;
+    -webkit-filter: blur(5px);
+    filter: blur(5px);
+}
+
+/*****************************************
+* @Content
+*****************************************/
+.content {
+    position: relative;
+    z-index: 20;
+    width: 800px;
+    margin: 50px auto;
+    padding: 15px;
+    background: rgba(255, 255, 255, .9);
+    border-radius: 5px;
+    box-shadow: 2px 2px 2px #fff;
+    color: #333;
+}
+
+/*****************************************
+* @Item
+*****************************************/
+.titMaster {
+    font-size: 22px;
+    text-shadow: 3px 3px 3px #fff;
+    color: #E05F09;
+}
+
+.item_desc {
+    font-size: 14px;
+    margin: 0 0 20px 0;
+}
+
+.item_inner {
+    font-size: 14px;
+}
+
+.item-anchor {
+    color: #27A4EB;
+}
+
+/*****************************************
+* @Subscribe
+*****************************************/
+.subscribe {
+    margin: 20px 0;
+}
+
+.subscribe_inner {
+    border: none;
+    margin: 0;
+    padding: 0;
+}
+
+.subscribe_tit {
+    display: block;
+    font-size: 22px;
+    font-weight: bold;
+    margin: 0 0 10px 0;
+    color: #E05F09;
+}
+
+.subscribe_field {
+    width: 350px;
+    height: 45px;
+    display: inline-block;
+    font-size: 18px;
+    padding: 10px;
+}
+.subscribe_field:focus {
+    font-weight: bold;
+    color: #333;
+}
+
+.subscribe_submit {
+    width: 120px;
+    height: 45px;
+    display: inline-block;
+    white-space: nowrap;
+    background-color: #ddd;
+    background-image: -webkit-gradient(linear, left top, left bottom, from(#eee), to(#ccc));
+    background-image: -webkit-linear-gradient(top, #eee, #ccc);
+    background-image: -moz-linear-gradient(top, #eee, #ccc);
+    background-image: -ms-linear-gradient(top, #eee, #ccc);
+    background-image: -o-linear-gradient(top, #eee, #ccc);
+    background-image: linear-gradient(top, #eee, #ccc);
+    border: 1px solid #777;
+    margin: 0 0 0 10px;
+    font-size: 18px;
+    font-weight: bold;
+    text-decoration: none;
+    color: #333;
+    text-shadow: 0 1px 0 rgba(255,255,255,.8);
+    border-radius: .2em;
+    box-shadow: 0 0 1px 1px rgba(255,255,255,.8) inset, 0 1px 0 rgba(0,0,0,.3);
+}
+.subscribe_submit:hover {
+    border: none;
+    box-shadow: none;
+}
