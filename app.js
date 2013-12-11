@@ -3,6 +3,7 @@ var express = require('express')
     , exphbs  = require('express3-handlebars')
     , request = require('request')
     , fs = require('fs')
+    , nodemailer = require('nodemailer')
     , app = express()
     , port = process.env.PORT || 3000
     , io = require('socket.io').listen(app.listen(port))
@@ -29,12 +30,14 @@ app.configure(function(){
 app.engine('handlebars', exphbs({defaultLayout: 'main'}));
 app.set('view engine', 'handlebars');
 
-app.get('/', function (req, res) {
+// request defaults
+var data,
+    dataJSON = [],
+    BBYurl = 'http://api.remix.bestbuy.com/v1/products(search=PS4&manufacturer=sony&categoryPath.name=PS4 Consoles)?format=json&apiKey=',
+    emailBody = '',
+    PS4available = 0;
 
-    // request defaults
-    var data,
-        dataJSON = [],
-        BBYurl = 'http://api.remix.bestbuy.com/v1/products(search=PS4&manufacturer=sony&categoryPath.name=PS4 Consoles)?format=json&apiKey=';
+app.get('/', function (req, res) {
 
     request(BBYurl + key, function(error, response, body) {
         if ( !error && response.statusCode == 200 ) {
@@ -52,6 +55,7 @@ app.get('/', function (req, res) {
                 helpers: {
                     is: function (arg) {
                         if ( arg ) {
+                            PS4available++
                             return ('Yes!! :)');
                         } else {
                             return ('No :(');
@@ -60,14 +64,16 @@ app.get('/', function (req, res) {
                 }
             });
 
+            checkToSendEmail();
 
-            fs.writeFile("/Users/free005304/Desktop/ps4logs", body, function(err) {
-                if(err) {
-                    console.log(err);
-                } else {
-                    console.log("The file was saved!");
-                }
-            });
+
+//            fs.writeFile("/Users/free005304/Desktop/ps4logs1", body, function(err) {
+//                if(err) {
+//                    console.log(err);
+//                } else {
+//                    console.log("The file was saved!");
+//                }
+//            });
 
 
         }
@@ -94,13 +100,64 @@ app.get('/', function (req, res) {
                     io.sockets.emit('refreshBrowser', { data: true });
                 }
 
+                checkToSendEmail();
+
             }
 
         });
     }
 
-    var intervalId = setInterval(requestData, 4000);
+    var intervalId = setInterval(requestData, 60000);
+
+    /**
+     * Check how many PS4's are available if there's more than 1
+     * build html email and finally send email alert
+     * @method checkToSendEmail
+     */
+    function checkToSendEmail() {
+        if ( PS4available > 0 ) {
+            for ( var i = 0; i < data.products.length; i++ ) {
+                emailBody += ' <p><strong>PlayStation 4 available</strong> at Best Buy <a href=" ' + data.products[i].url + ' " > link: ' + data.products[i].url + ' </a> </p> <br/><br/> ';
+            }
+            sendEmail();
+        }
+    }
 
 });
+
+/**
+ * Start to handle email
+ *
+ */
+var myService = 'Gmail',
+    myUser = "michaell.llancaster@gmail.com",
+    myPass = 'Logitech10';
+
+var smtpTransport = nodemailer.createTransport('SMTP',{
+    service: myService,
+    auth: {
+        user: myUser,
+        pass: myPass
+    }
+});
+
+/**
+ * Configure email and than sends it
+ * @method sendEmail
+ */
+function sendEmail() {
+    smtpTransport.sendMail({
+        from: myUser, // sender address
+        to: myUser, // comma separated list of receivers
+        subject: "Playstation 4 available!!", // Subject line
+        html: emailBody // html body
+    }, function(error, response){
+        if ( error ) {
+            console.log(error);
+        } else {
+            console.log("Message sent: " + response.message);
+        }
+    });
+}
 
 console.log('express3-handlebars server listening on: 3000');
