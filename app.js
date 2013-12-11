@@ -4,11 +4,11 @@ var express = require('express')
     , request = require('request')
     , fs = require('fs')
     , nodemailer = require('nodemailer')
-    , app = express()
     , port = process.env.PORT || 3000
-    , io = require('socket.io').listen(app.listen(port))
     , hbs
-    , pub = __dirname + '/public';
+    , pub = __dirname + '/public'
+    , app = express()
+    , io = require('socket.io').listen(app.listen(port));
 
 // BBY Key 'r29ttrcwgf4vc47gsz5a8z7r'
 var key = 'r29ttrcwgf4vc47gsz5a8z7r';
@@ -27,7 +27,10 @@ app.configure(function(){
     app.use(express.errorHandler());
 });
 
-app.engine('handlebars', exphbs({defaultLayout: 'main'}));
+app.engine('handlebars', exphbs({
+    defaultLayout: 'main'
+})
+);
 app.set('view engine', 'handlebars');
 
 // request defaults
