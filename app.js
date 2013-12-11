@@ -1,14 +1,14 @@
 // App defaults
 var express = require('express')
     , exphbs  = require('express3-handlebars')
+    , app = express()
+    , port = process.env.PORT || 3000
+    , io = require('socket.io').listen(app.listen(port))
     , request = require('request')
     , fs = require('fs')
     , nodemailer = require('nodemailer')
-    , port = process.env.PORT || 3000
-    , hbs
-    , pub = __dirname + '/public'
-    , app = express()
-    , io = require('socket.io').listen(app.listen(port));
+//    , hbs
+    , pub = __dirname + '/public';
 
 // BBY Key 'r29ttrcwgf4vc47gsz5a8z7r'
 var key = 'r29ttrcwgf4vc47gsz5a8z7r';
@@ -44,12 +44,15 @@ app.get('/', function (req, res) {
 
     request(BBYurl + key, function(error, response, body) {
         if ( !error && response.statusCode == 200 ) {
+
+            dataJSON = [];
+            data = undefined;
             dataJSON.push(body);
 
             try {
                 data = JSON.parse(dataJSON.join(''));
             } catch(e){
-                console.error('Error: ' + error);
+                console.error('Error on first load: ' + error);
             }
 
             res.render('home', {
@@ -83,50 +86,51 @@ app.get('/', function (req, res) {
 
     });
 
-    function requestData() {
-        request(BBYurl + key, function(error, response, body) {
-
-            if ( !error && response.statusCode == 200 ) {
-                var newBody = [],
-                    newData;
-
-                newBody.push(body);
-
-                try {
-                    data = JSON.parse(dataJSON.join(''));
-                    newData = JSON.parse(newBody.join(''));
-                } catch(e){
-                    console.error('Error: ' + error);
-                }
-
-                if ( newData.products.length != data.products.length ) {
-                    io.sockets.emit('refreshBrowser', { data: true });
-                }
-
-                checkToSendEmail();
-
-            }
-
-        });
-    }
-
-    var intervalId = setInterval(requestData, 60000);
-
-    /**
-     * Check how many PS4's are available if there's more than 1
-     * build html email and finally send email alert
-     * @method checkToSendEmail
-     */
-    function checkToSendEmail() {
-        if ( PS4available > 0 ) {
-            for ( var i = 0; i < data.products.length; i++ ) {
-                emailBody += ' <p><strong>PlayStation 4 available</strong> at Best Buy <a href=" ' + data.products[i].url + ' " > link: ' + data.products[i].url + ' </a> </p> <br/><br/> ';
-            }
-            sendEmail();
-        }
-    }
-
+   console.log('PlayStation 4 available is: ' + PS4available);
 });
+
+var intervalId = setInterval(requestData, 60000);
+
+function requestData() {
+    request(BBYurl + key, function(error, response, body) {
+
+        if ( !error && response.statusCode == 200 ) {
+            var newBody = [],
+                newData;
+
+            newBody.push(body);
+
+            try {
+                data = JSON.parse(dataJSON.join(''));
+                newData = JSON.parse(newBody.join(''));
+            } catch(e){
+                console.error('Error on request data: ' + error);
+            }
+
+            if ( newData.products.length != data.products.length ) {
+                io.sockets.emit('refreshBrowser', { data: true });
+            }
+
+            checkToSendEmail();
+
+        }
+
+    });
+}
+
+/**
+ * Check how many PS4's are available if there's more than 1
+ * build html email and finally send email alert
+ * @method checkToSendEmail
+ */
+function checkToSendEmail() {
+    if ( PS4available > 0 ) {
+        for ( var i = 0; i < data.products.length; i++ ) {
+            emailBody += ' <p><strong>PlayStation 4 available</strong> at Best Buy <a href=" ' + data.products[i].url + ' " > link: ' + data.products[i].url + ' </a> </p> <br/><br/> ';
+        }
+        sendEmail();
+    }
+}
 
 /**
  * Start to handle email
