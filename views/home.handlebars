@@ -10,27 +10,29 @@
 
     <h2 class="titMaster">What was found at this time?</h2>
 {{#items}}
-    <p class="item_inner">
-        <strong class="item_lbl">Product name: </strong> <span class="item_status">{{ name }}</span>
-    </p>
-    <p class="item_inner">
-        <strong class="item_lbl">Regular price: </strong> <span class="item_status">${{ regularPrice }}</span>
-    </p>
-    <p class="item_inner">
-        <strong class="item_lbl">URL: </strong> <a href="{{ url }}" target="_blank" title="{{ name }}" class="item_status item-anchor">{{ name }}</a>
-    </p>
-    <p class="item_inner">
-        <strong class="item_lbl">Available in store? </strong>
+    <div class="item_content">
+        <p class="item_inner">
+            <strong class="item_lbl">Product name: </strong> <span class="item_status">{{ name }}</span>
+        </p>
+        <p class="item_inner">
+            <strong class="item_lbl">Regular price: </strong> <span class="item_status">${{ regularPrice }}</span>
+        </p>
+        <p class="item_inner">
+            <strong class="item_lbl">URL: </strong> <a href="{{ url }}" target="_blank" title="{{ name }}" class="item_status item-anchor">{{ name }}</a>
+        </p>
+        <p class="item_inner">
+            <strong class="item_lbl">Available in store? </strong>
         <span class="item_status">
             {{#is inStoreAvailability}} {{else}} {{/is}}
         </span>
-    </p>
-    <p class="item_inner">
-        <strong class="item_lbl">Available online? </strong>
+        </p>
+        <p class="item_inner">
+            <strong class="item_lbl">Available online? </strong>
         <span class="item_status">
             {{#is onlineAvailability}} {{else}} {{/is}}
         </span>
-    </p>
+        </p>
+    </div>
 {{/items}}
 </section>
 

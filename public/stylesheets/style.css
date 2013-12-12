@@ -56,8 +56,13 @@ body {
     margin: 0 0 20px 0;
 }
 
+.item_content {
+    margin: 25px 0;
+}
+
 .item_inner {
     font-size: 14px;
+    margin: 4px 0;
 }
 
 .item-anchor {
