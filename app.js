@@ -7,7 +7,8 @@ var express = require('express')
     , request = require('request')
     , fs = require('fs')
     , nodemailer = require('nodemailer')
-//    , hbs
+    , NEdb = require('nedb')
+    , usersDB = new NEdb({ filename: 'db/subscribed.db', autoload: true })
     , pub = __dirname + '/public';
 
 // BBY Key 'r29ttrcwgf4vc47gsz5a8z7r'
@@ -15,7 +16,13 @@ var key = 'r29ttrcwgf4vc47gsz5a8z7r';
 
 // https://devcenter.heroku.com/articles/using-socket-io-with-node-js-on-heroku
 io.configure(function () {
-    io.set("transports", ["xhr-polling"]);
+    io.set('transports', [
+        'websocket'
+        , 'xhr-polling'
+        , 'flashsocket'
+        , 'htmlfile'
+        , 'jsonp-polling'
+    ]);
     io.set("polling duration", 10);
 });
 
@@ -28,9 +35,10 @@ app.configure(function(){
 });
 
 app.engine('handlebars', exphbs({
-    defaultLayout: 'main'
-})
+        defaultLayout: 'main'
+    })
 );
+
 app.set('view engine', 'handlebars');
 
 // request defaults
@@ -86,9 +94,41 @@ app.get('/', function (req, res) {
 
     });
 
-   console.log('PlayStation 4 available is: ' + PS4available);
 });
 
+/**
+ * Get data sent by user
+ */
+app.post('/', function(req, res) {
+    var email = req.body.email,
+        exist = null,
+        document = {
+            email: email
+        };
+
+    usersDB.find({ email: email }, function (err, docs) {
+        for ( var i = 0; i < docs.length; i++ ) {
+            if ( email === docs[i].email ) {
+                exist = true
+                break;
+            } else {
+                exist = false;
+            }
+        }
+
+        if ( !exist ) {
+            usersDB.insert(document);
+            res.redirect('/');
+        } else {
+            io.sockets.emit('refreshBrowser', { data: false });
+        }
+    });
+});
+
+/**
+ * Initialize long polling to check BBY open data for each one minute
+ * @method requestData
+ */
 var intervalId = setInterval(requestData, 60000);
 
 function requestData() {
@@ -101,7 +141,6 @@ function requestData() {
             newBody.push(body);
 
             try {
-                data = JSON.parse(dataJSON.join(''));
                 newData = JSON.parse(newBody.join(''));
             } catch(e){
                 console.error('Error on request data: ' + error);
@@ -137,7 +176,7 @@ function checkToSendEmail() {
  *
  */
 var myService = 'Gmail',
-    myUser = "michaell.llancaster@gmail.com",
+    myUser = 'michaell.llancaster@gmail.com',
     myPass = 'Logitech10';
 
 var smtpTransport = nodemailer.createTransport('SMTP',{
@@ -153,18 +192,25 @@ var smtpTransport = nodemailer.createTransport('SMTP',{
  * @method sendEmail
  */
 function sendEmail() {
-    smtpTransport.sendMail({
-        from: myUser, // sender address
-        to: myUser, // comma separated list of receivers
-        subject: "Playstation 4 available!!", // Subject line
-        html: emailBody // html body
-    }, function(error, response){
-        if ( error ) {
-            console.log(error);
-        } else {
-            console.log("Message sent: " + response.message);
-        }
+
+    usersDB.find({}, function (err, docs) {
+        var dataFormatted = docs.join(', ');
+
+        smtpTransport.sendMail({
+            from: myUser, // sender address
+            to: dataFormatted, // comma separated list of receivers
+            subject: "Playstation 4 available!!", // Subject line
+            html: emailBody // html body
+        }, function(error, response){
+            if ( error ) {
+                console.log(error);
+            } else {
+                console.log("Message sent: " + response.message);
+                clearInterval(intervalId);
+            }
+        });
     });
+
 }
 
 console.log('express3-handlebars server listening on: 3000');

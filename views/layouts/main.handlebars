@@ -35,8 +35,12 @@
                 onRefreshBrowser: function() {
                     socket.on('refreshBrowser', function(response) {
 
+                        console.log('contact made.')
+
                         if ( response.data ) {
                             window.location.reload();
+                        } else {
+                            alert('Email already subscribed. Please enter another email.');
                         }
                     });
                 }
