@@ -169,7 +169,7 @@ function requestData() {
 function checkToSendEmail() {
     if ( PS4available > 0 ) {
         for ( var i = 0; i < data.products.length; i++ ) {
-            emailBody += ' <p>Name: <strong>' + data.products[i].name + '</strong> at Best Buy <a href=" ' + data.products[i].url + ' " > link: ' + data.products[i].url + ' </a> </p> <br/><br/> ';
+            emailBody += ' <p>Name: <strong> PS4 available</strong> at Best Buy <a href=" ' + data.products[i].url + ' " > link: ' + data.products[i].url + ' </a> </p> <br/><br/> ';
         }
         sendEmail();
     }
