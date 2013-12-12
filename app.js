@@ -44,7 +44,7 @@ app.set('view engine', 'handlebars');
 // request defaults
 var data,
     dataJSON = [],
-    BBYurl = 'http://api.remix.bestbuy.com/v1/products(search=PS4&manufacturer=sony&categoryPath.name=PS4 Consoles)?format=json&apiKey=',
+    BBYurl = 'http://api.remix.bestbuy.com/v1/products(search=PS4)?format=json&apiKey=',
     emailBody = '',
     PS4available = 0;
 
