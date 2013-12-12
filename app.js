@@ -42,6 +42,7 @@ app.engine('handlebars', exphbs({
 app.set('view engine', 'handlebars');
 
 // request defaults
+// search=PS4&manufacturer=sony&categoryPath.name=PS4 Consoles
 var data,
     dataJSON = [],
     BBYurl = 'http://api.remix.bestbuy.com/v1/products(search=PS4)?format=json&apiKey=',
@@ -204,6 +205,7 @@ function sendEmail() {
         }, function(error, response){
             if ( error ) {
                 console.log(error);
+                console.log('Recipients: ' + dataFormatted)
             } else {
                 console.log("Message sent: " + response.message);
                 clearInterval(intervalId);

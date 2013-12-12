@@ -35,8 +35,6 @@
                 onRefreshBrowser: function() {
                     socket.on('refreshBrowser', function(response) {
 
-                        console.log('contact made.')
-
                         if ( response.data ) {
                             window.location.reload();
                         } else {
