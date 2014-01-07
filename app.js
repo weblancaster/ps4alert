@@ -81,16 +81,6 @@ app.get('/', function (req, res) {
 
             checkToSendEmail();
 
-
-//            fs.writeFile("/Users/free005304/Desktop/ps4logs1", body, function(err) {
-//                if(err) {
-//                    console.log(err);
-//                } else {
-//                    console.log("The file was saved!");
-//                }
-//            });
-
-
         }
 
     });
@@ -129,37 +119,6 @@ app.post('/', function(req, res) {
     });
 });
 
-/**
- * Initialize long polling to check BBY open data for each one minute
- * @method requestData
- */
-var intervalId = setInterval(requestData, 60000);
-
-function requestData() {
-    request(BBYurl + key, function(error, response, body) {
-
-        if ( !error && response.statusCode == 200 ) {
-            var newBody = [],
-                newData;
-
-            newBody.push(body);
-
-            try {
-                newData = JSON.parse(newBody.join(''));
-            } catch(e){
-                console.error('Error on request data: ' + error);
-            }
-
-            if ( newData.products.length != data.products.length ) {
-                io.sockets.emit('refreshBrowser', { data: true });
-            }
-
-            checkToSendEmail();
-
-        }
-
-    });
-}
 
 /**
  * Check how many PS4's are available if there's more than 1
@@ -179,17 +138,7 @@ function checkToSendEmail() {
  * Start to handle email
  *
  */
-var myService = 'Gmail',
-    myUser = 'michaell.llancaster@gmail.com',
-    myPass = 'Logitech10';
-
-var smtpTransport = nodemailer.createTransport('SMTP',{
-    service: myService,
-    auth: {
-        user: myUser,
-        pass: myPass
-    }
-});
+var transport = nodemailer.createTransport("Sendmail");
 
 /**
  * Configure email and than sends it
@@ -212,9 +161,9 @@ function sendEmail() {
 
         if ( emails !== '' ) {
             smtpTransport.sendMail({
-                from: myUser, // sender address
-                to: emails, // comma separated list of receivers
-                subject: "Playstation 4 available!!", // Subject line
+                from: 'Michael Lancaster',
+                to: emails,
+                subject: "Playstation 4 available!!",
                 html: emailBody // html body
             }, function(error, response){
                 if ( error ) {
