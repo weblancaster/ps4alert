@@ -11,6 +11,7 @@
     "nedb": "~0.9.3"
   },
   "devDependencies": {
-    "request": "~2.29.0"
+    "request": "~2.29.0",
+    "express3-handlebars": "~0.5.0"
   }
 }
